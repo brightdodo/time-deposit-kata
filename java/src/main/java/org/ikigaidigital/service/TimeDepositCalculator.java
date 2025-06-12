@@ -1,4 +1,4 @@
-package org.ikigaidigital;
+package org.ikigaidigital.service;
 
 import org.ikigaidigital.domain.entity.TimeDeposit;
 

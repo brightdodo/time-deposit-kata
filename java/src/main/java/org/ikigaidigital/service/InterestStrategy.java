@@ -1,4 +1,4 @@
-package org.ikigaidigital;
+package org.ikigaidigital.service;
 
 /**
  * Strategy interface for calculating monthly interest

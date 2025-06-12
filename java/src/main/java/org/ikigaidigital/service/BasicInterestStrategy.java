@@ -1,4 +1,4 @@
-package org.ikigaidigital;
+package org.ikigaidigital.service;
 
 public class BasicInterestStrategy implements InterestStrategy {
     @Override

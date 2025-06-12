@@ -10,7 +10,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -24,10 +23,51 @@ public class Withdrawal {
     @JoinColumn(name = "time_deposit_id", nullable = false)
     private TimeDeposit timeDeposit;
 
-    @Column(nullable = false, precision = 19, scale = 2)
-    private BigDecimal amount;
+    @Column(nullable = false, precision = 19)
+    private Double amount;
 
     @Column(nullable = false)
     private LocalDate date;
 
+    public Withdrawal() {
+    }
+
+    public Withdrawal(Integer id, TimeDeposit timeDeposit, Double amount, LocalDate date) {
+        this.id = id;
+        this.timeDeposit = timeDeposit;
+        this.amount = amount;
+        this.date = date;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public TimeDeposit getTimeDeposit() {
+        return timeDeposit;
+    }
+
+    public void setTimeDeposit(TimeDeposit timeDeposit) {
+        this.timeDeposit = timeDeposit;
+    }
+
+    public Double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
 }
