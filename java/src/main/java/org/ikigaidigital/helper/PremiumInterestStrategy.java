@@ -2,8 +2,12 @@ package org.ikigaidigital.helper;
 
 public class PremiumInterestStrategy implements InterestStrategy {
     @Override
+    public String getPlanCode() {
+        return "premium";
+    }
+
+    @Override
     public double calculate(double balance, int days) {
-        // 5% per annum starting after 45 days
         if (days <= 45) {
             return 0;
         }

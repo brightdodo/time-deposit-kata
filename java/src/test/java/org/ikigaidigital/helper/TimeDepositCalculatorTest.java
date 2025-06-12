@@ -10,7 +10,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.offset;
 
 class TimeDepositCalculatorTest {
-    private final TimeDepositCalculator calculator = new TimeDepositCalculator();
+    List<InterestStrategy> strategies = List.of(new BasicInterestStrategy(), new StudentInterestStrategy(), new PremiumInterestStrategy());
+    private final TimeDepositCalculator calculator = new TimeDepositCalculator(new InterestStrategyRegistry(strategies));
     private static final double INITIAL_BALANCE = 1000.00;
     private static final double TOLERANCE = 0.01;
 
