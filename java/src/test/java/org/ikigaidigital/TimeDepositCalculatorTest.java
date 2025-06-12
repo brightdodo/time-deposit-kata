@@ -1,6 +1,7 @@
 package org.ikigaidigital;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.List;
 
@@ -9,111 +10,61 @@ import static org.assertj.core.api.Assertions.offset;
 
 class TimeDepositCalculatorTest {
     private final TimeDepositCalculator calculator = new TimeDepositCalculator();
-    private static final double INITIAL_BALANCE = 1234567.00;
+    private static final double INITIAL_BALANCE = 1000.00;
     private static final double TOLERANCE = 0.01;
 
-    @Test
-    void updateBalance_Test() {
-        TimeDepositCalculator calc = new TimeDepositCalculator();
-        List<TimeDeposit> plans = List.of(
-                new TimeDeposit(1, "basic", INITIAL_BALANCE, 45)
-        );
-        calc.updateBalance(plans);
-
-        assertThat(1).isEqualTo(1);
-    }
-
-
-    @Test
-    void basicPlan_noInterest_within30Days() {
-        TimeDeposit td = new TimeDeposit(1, "basic", INITIAL_BALANCE, 30);
+    @ParameterizedTest(name = "No interest for {0} plan at {1} days")
+    @CsvSource({
+            "basic,30,1000.00",
+            "student,30,1000.00",
+            "premium,30,1000.00"
+    })
+    void noInterestWithin30Days(String planType, int days, double expectedBalance) {
+        TimeDeposit td = new TimeDeposit(1, planType, INITIAL_BALANCE, days);
         calculator.updateBalance(List.of(td));
         assertThat(td.getBalance())
-                .isCloseTo(INITIAL_BALANCE, offset(TOLERANCE));
+                .as("Balance for %s plan at %d days", planType, days)
+                .isCloseTo(expectedBalance, offset(TOLERANCE));
     }
 
-    @Test
-    void studentPlan_noInterest_within30Days() {
-        TimeDeposit td = new TimeDeposit(1, "student", INITIAL_BALANCE, 30);
+    @ParameterizedTest(name = "Basic plan at {1} days → {2}")
+    @CsvSource({
+            "basic,31,1000.83",
+            "basic,60,1000.83"
+    })
+    void basicPlanInterest(String planType, int days, double expectedBalance) {
+        TimeDeposit td = new TimeDeposit(1, planType, INITIAL_BALANCE, days);
         calculator.updateBalance(List.of(td));
         assertThat(td.getBalance())
-                .isCloseTo(INITIAL_BALANCE, offset(TOLERANCE));
+                .as("Basic plan balance at %d days", days)
+                .isCloseTo(expectedBalance, offset(TOLERANCE));
     }
 
-    @Test
-    void premiumPlan_noInterest_within30Days() {
-        TimeDeposit td = new TimeDeposit(1, "premium", INITIAL_BALANCE, 30);
+    @ParameterizedTest(name = "Student plan at {1} days → {2}")
+    @CsvSource({
+            "student,31,1002.50",
+            "student,365,1002.50",
+            "student,366,1000.00"
+    })
+    void studentPlanInterest(String planType, int days, double expectedBalance) {
+        TimeDeposit td = new TimeDeposit(1, planType, INITIAL_BALANCE, days);
         calculator.updateBalance(List.of(td));
         assertThat(td.getBalance())
-                .isCloseTo(INITIAL_BALANCE, offset(TOLERANCE));
+                .as("Student plan balance at %d days", days)
+                .isCloseTo(expectedBalance, offset(TOLERANCE));
     }
 
-    @Test
-    void basicPlan_interest_after30Days() {
-        TimeDeposit td = new TimeDeposit(1, "basic", INITIAL_BALANCE, 31);
-        calculator.updateBalance(List.of(td));
-        double expected = INITIAL_BALANCE + Math.round(INITIAL_BALANCE * 0.01 / 12 * 100.0) / 100.0;
-        assertThat(td.getBalance())
-                .isCloseTo(expected, offset(TOLERANCE));
-    }
-
-    @Test
-    void basicPlan_interest_at60Days() {
-        TimeDeposit td = new TimeDeposit(1, "basic", INITIAL_BALANCE, 60);
-        calculator.updateBalance(List.of(td));
-        double expected = INITIAL_BALANCE + Math.round(INITIAL_BALANCE * 0.01 / 12 * 100.0) / 100.0;
-        assertThat(td.getBalance())
-                .isCloseTo(expected, offset(TOLERANCE));
-    }
-
-    @Test
-    void studentPlan_interest_after30Days_and_beforeYear() {
-        TimeDeposit td = new TimeDeposit(1, "student", INITIAL_BALANCE, 31);
-        calculator.updateBalance(List.of(td));
-        double expected = INITIAL_BALANCE + Math.round(INITIAL_BALANCE * 0.03 / 12 * 100.0) / 100.0;
-        assertThat(td.getBalance())
-                .isCloseTo(expected, offset(TOLERANCE));
-    }
-
-    @Test
-    void studentPlan_interest_at365Days() {
-        TimeDeposit td = new TimeDeposit(1, "student", INITIAL_BALANCE, 365);
-        calculator.updateBalance(List.of(td));
-        double expected = INITIAL_BALANCE + Math.round(INITIAL_BALANCE * 0.03 / 12 * 100.0) / 100.0;
-        assertThat(td.getBalance())
-                .isCloseTo(expected, offset(TOLERANCE));
-    }
-
-    @Test
-    void studentPlan_noInterest_afterOneYear() {
-        TimeDeposit td = new TimeDeposit(1, "student", INITIAL_BALANCE, 366);
+    @ParameterizedTest(name = "Premium plan at {1} days → {2}")
+    @CsvSource({
+            "premium,31,1000.00",
+            "premium,45,1000.00",
+            "premium,46,1004.17"
+    })
+    void premiumPlanInterest(String planType, int days, double expectedBalance) {
+        TimeDeposit td = new TimeDeposit(1, planType, INITIAL_BALANCE, days);
         calculator.updateBalance(List.of(td));
         assertThat(td.getBalance())
-                .isCloseTo(INITIAL_BALANCE, offset(TOLERANCE));
-    }
-
-    @Test
-    void premiumPlan_noInterest_within45Days() {
-        TimeDeposit td = new TimeDeposit(1, "premium", INITIAL_BALANCE, 45);
-        calculator.updateBalance(List.of(td));
-        assertThat(td.getBalance())
-                .isCloseTo(INITIAL_BALANCE, offset(TOLERANCE));
-    }
-
-    @Test
-    void premiumPlan_noInterest_after30Days_but_before46Days() {
-        TimeDeposit td = new TimeDeposit(1, "premium", INITIAL_BALANCE, 31);
-        calculator.updateBalance(List.of(td));
-        assertThat(td.getBalance())
-                .isCloseTo(INITIAL_BALANCE, offset(TOLERANCE));
-    }
-
-    @Test
-    void premiumPlan_interest_after45Days() {
-        TimeDeposit td = new TimeDeposit(1, "premium", INITIAL_BALANCE, 46);
-        calculator.updateBalance(List.of(td));
-        double expected = INITIAL_BALANCE + Math.round(INITIAL_BALANCE * 0.05 / 12 * 100.0) / 100.0;
-        assertThat(td.getBalance())
-                .isCloseTo(expected, offset(TOLERANCE));
+                .as("Premium plan balance at %d days", days)
+                .isCloseTo(expectedBalance, offset(TOLERANCE));
     }
 }
