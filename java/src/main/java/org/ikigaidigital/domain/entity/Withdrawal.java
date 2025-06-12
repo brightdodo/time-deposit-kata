@@ -23,7 +23,7 @@ public class Withdrawal {
     @JoinColumn(name = "time_deposit_id", nullable = false)
     private TimeDeposit timeDeposit;
 
-    @Column(nullable = false, precision = 19)
+    @Column(nullable = false)
     private Double amount;
 
     @Column(nullable = false)

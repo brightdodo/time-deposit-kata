@@ -1,4 +1,9 @@
-package org.ikigaidigital.service;
+package org.ikigaidigital.domain;
+
+import org.ikigaidigital.helper.BasicInterestStrategy;
+import org.ikigaidigital.helper.InterestStrategy;
+import org.ikigaidigital.helper.PremiumInterestStrategy;
+import org.ikigaidigital.helper.StudentInterestStrategy;
 
 public enum PlanType {
     BASIC(new BasicInterestStrategy()),

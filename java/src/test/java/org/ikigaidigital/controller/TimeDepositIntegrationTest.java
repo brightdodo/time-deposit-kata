@@ -50,7 +50,7 @@ class TimeDepositIntegrationTest {
     @Test
     void getAllTimeDeposits_returnsDepositsWithWithdrawals() throws Exception {
         // Seed deposit
-        TimeDeposit deposit = new TimeDeposit(1, "basic", 1000.00, 40);
+        TimeDeposit deposit = new TimeDeposit(0, "basic", 1000.00, 40);
         deposit = depositRepo.save(deposit);
 
         // Seed withdrawal
@@ -71,7 +71,7 @@ class TimeDepositIntegrationTest {
     @Test
     void updateBalances_updatesAndPersistsNewBalances() throws Exception {
         // Seed deposit
-        TimeDeposit deposit = new TimeDeposit(2, "basic", 1200.00, 31);
+        TimeDeposit deposit = new TimeDeposit(0, "basic", 1200.00, 31);
         deposit = depositRepo.save(deposit);
 
         // Call PUT to update balances
