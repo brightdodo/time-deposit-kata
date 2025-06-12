@@ -1,5 +1,6 @@
 package org.ikigaidigital;
 
+import org.ikigaidigital.domain.entity.TimeDeposit;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
